@@ -19,15 +19,33 @@ func Download(videoURL, outputDir string) error {
 		return fmt.Errorf("Failed getting video info: %w", err)
 	}
 
+	muxed := video.Formats.Type("video/mp4").
+        Select(func(f youtube.Format) bool {
+            return f.AudioQuality != ""
+        })
+
+	var format *youtube.Format
+
+    if len(muxed) > 0 {
+        muxed.Sort()
+        f := muxed[len(muxed)-1]
+        format = &f
+    } else {
+        formats := video.Formats.WithAudioChannels()
+        if len(formats) == 0 {
+            return fmt.Errorf("nenhum formato com áudio+vídeo encontrado")
+        }
+        formats.Sort()
+        f := formats[len(formats)-1]
+        format = &f
+    }
+
 	formats := video.Formats.WithAudioChannels()
 	if len(formats) == 0 {
 		return fmt.Errorf("no audio formats available")
 	}
 
-	formats.Sort()
-	format := formats[len(formats)-1]
-
-	stream, _, err := client.GetStream(video, &format)
+	stream, _, err := client.GetStream(video, format)
 	if err != nil {
 		return fmt.Errorf("Failed getting stream: %w", err)
 	}
