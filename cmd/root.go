@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"fmt"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/somnifobia/media-downloader/internal/app"
@@ -12,11 +13,24 @@ var (
 	outputDir string
 )
 
+func defaultOutputDir() string {
+    home, err := os.UserHomeDir()
+    if err != nil {
+        return "."
+    }
+    return filepath.Join(home, "Videos")
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "medown [url...]",
 	Short: "Download media files from URLs",
 	Args: cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error{
+		dir := outputDir
+		if dir == "" {
+			dir = defaultOutputDir()
+		}
+
 		for _, u := range args {
 			if err := app.Download(u, outputDir); err != nil {
 				fmt.Fprintf(os.Stderr, "Download Error %s: %v\n", u, err)
@@ -35,5 +49,10 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&outputDir, "output", "o", ".", "Output Directory")
+	rootCmd.PersistentFlags().StringVarP(
+		&outputDir,
+		"output",
+		"o",
+		"",
+		"Output Directory (default: $HOME/Videos)")
 }
