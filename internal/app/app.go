@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/somnifobia/media-downloader/internal/ytdl"
-	"github.com/somnifobia/media-downloader/internal/twitterdl"
+	"github.com/somnifobia/medown/internal/ytdl"
+	"github.com/somnifobia/medown/internal/twitterdl"
 )
 
 func Download(rawURL, outputDir string) error {
