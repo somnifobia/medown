@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/somnifobia/internal/app"
+	"github.com/somnifobia/media-downloader/internal/app"
 )
 
 var (
