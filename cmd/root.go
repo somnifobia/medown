@@ -32,7 +32,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		for _, u := range args {
-			if err := app.Download(u, outputDir); err != nil {
+			if err := app.Download(u, dir); err != nil {
 				fmt.Fprintf(os.Stderr, "Download Error %s: %v\n", u, err)
 			} else {
 				fmt.Printf("Download completed successfully\n")
